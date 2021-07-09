@@ -31,7 +31,7 @@ int main(int argc, char **argv){
     	return 0;
     printf("running... \n");
 
-	const size_t MIN_MESSAGE_SIZE = atof(argv[1]) * pow(10,6);
+    const size_t MIN_MESSAGE_SIZE = atof(argv[1]) * pow(10,6);
     const size_t MAX_MESSAGE_SIZE = atof(argv[2]) * pow(10,6);
     const size_t GRANULARITY      = atoi(argv[3]);
     const size_t NUMBER_OF_TESTS  = atoi(argv[4]);
