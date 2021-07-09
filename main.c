@@ -1,6 +1,7 @@
 // -fopenmp -lycrypto
-// Tests the run time of openssl's SHA1 implmentation
-// and places the results in result.csv
+// Tests the run time of openssl's hash function
+// and places the results in result.csv.
+// It is set to test SHA1
 
 // Arguments:
 // 1. Min message size(MB)
@@ -16,8 +17,9 @@
 #include <openssl/sha.h>
 #include <omp.h>
 
-#define SHA1_DIGEST_LENGTH 20
 #define FILE_NAME "results.csv"
+#define HASH_FUNCTION SHA1
+#define DIGEST_LENGTH SHA_DIGEST_LENGTH
 
 typedef uint8_t BYTE;
 
@@ -27,6 +29,8 @@ int checkArguments(int,char**);
 int main(int argc, char **argv){
 	if (!checkArguments(argc,argv))
     	return 0;
+    printf("running... \n");
+
 	const size_t MIN_MESSAGE_SIZE = atof(argv[1]) * pow(10,6);
     const size_t MAX_MESSAGE_SIZE = atof(argv[2]) * pow(10,6);
     const size_t GRANULARITY      = atoi(argv[3]);
@@ -35,7 +39,7 @@ int main(int argc, char **argv){
     BYTE* MESSAGE                 = calloc(MAX_MESSAGE_SIZE,sizeof(BYTE));
     double time  = 0;
     double start = 0;
-    BYTE result[SHA1_DIGEST_LENGTH];
+    BYTE result[DIGEST_LENGTH];
     FILE *of;
 
 	//output file configuration
@@ -48,13 +52,12 @@ int main(int argc, char **argv){
     fprintf(of,"Message Size(MB), Time\n");
     fclose(of);
 
-    printf("running... ");
     size_t size = MIN_MESSAGE_SIZE;
     size_t cycles  = MIN_MESSAGE_SIZE == MAX_MESSAGE_SIZE ? GRANULARITY-1:GRANULARITY;
     for (int i = 0;i<=cycles;i++){
         for (int j = 0;j<NUMBER_OF_TESTS;j++){
             start = omp_get_wtime();
-            SHA1(MESSAGE,size,result);
+            HASH_FUNCTION(MESSAGE,size,result);
             time += omp_get_wtime()-start;
         }
         of = fopen(FILE_NAME,"a");
@@ -64,7 +67,7 @@ int main(int argc, char **argv){
         fclose(of);
     }
     printf("Done\n");
-
+    
     free(MESSAGE);
     return 0;
 }
