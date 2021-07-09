@@ -1,0 +1,10 @@
+SHA1 Metric Data
+Min Message Size(MB): 0.000040
+Max Message Size(MB): 0.000050
+Granularity         : 2
+Tests per Cycle     : 1000000
+
+Message Size(MB), Time
+0.000040,        0.000000206
+0.000045,        0.000000177
+0.000050,        0.000000193
