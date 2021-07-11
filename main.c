@@ -52,8 +52,9 @@ int main(int argc, char **argv){
     fprintf(of,"Message Size(MB), Time\n");
     fclose(of);
 
+
     size_t size = MIN_MESSAGE_SIZE;
-    size_t cycles  = MIN_MESSAGE_SIZE == MAX_MESSAGE_SIZE ? GRANULARITY-1:GRANULARITY;
+    size_t cycles  = MIN_MESSAGE_SIZE == MAX_MESSAGE_SIZE ? 0 : GRANULARITY;
     for (int i = 0;i<=cycles;i++){
         for (int j = 0;j<NUMBER_OF_TESTS;j++){
             start = omp_get_wtime();
@@ -62,7 +63,7 @@ int main(int argc, char **argv){
         }
         of = fopen(FILE_NAME,"a");
         fprintf(of,"%0.6f,        %0.9f\n",size/pow(10,6),time/NUMBER_OF_TESTS);
-        size+= INCREMENT;
+        size += INCREMENT;
         time = 0;
         fclose(of);
     }
@@ -97,6 +98,11 @@ int checkArguments(int argc, char **argv){
     }
     else if (atoi(argv[3]) <= 0){
         printf("Please enter an integer greater than zero for granularity.\n");
+        printArguments();
+        return 0;
+    }
+    else if (atoi(argv[3]) > (atof(argv[2])*pow(10,6) - atof(argv[1])*pow(10,6))){
+        printf("Please enter a valid granularity. Fractions of a bytes cannot be hashed.\n");
         printArguments();
         return 0;
     }
